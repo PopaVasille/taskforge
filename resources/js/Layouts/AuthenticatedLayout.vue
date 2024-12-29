@@ -1,197 +1,206 @@
 <script setup>
 import { ref } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import {
+    LayoutDashboard,
+    FolderKanban,
+    Users,
+    Calendar,
+    Settings,
+    Bell,
+    ChevronDown,
+    Menu,
+    X,
+    Timer,
+    ClipboardList,
+    FileText
+} from 'lucide-vue-next';
+
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
-import Logo from "@/Components/Common/Logo.vue";
+import Logo from '@/Components/Common/Logo.vue';
 
 const showingNavigationDropdown = ref(false);
+const sidebarOpen = ref(true);
+const user = usePage().props.auth.user;
+
+const menuItems = [
+    {
+        icon: LayoutDashboard,
+        name: 'Dashboard',
+        route: 'dashboard'
+    },
+    {
+        icon: FolderKanban,
+        name: 'Proiecte',
+        route: 'projects.index',
+        subItems: [
+            { name: 'Listă Proiecte', route: 'projects.index' },
+            { name: 'Proiecte Active', route: 'projects.active' },
+            { name: 'Arhivă', route: 'projects.archived' }
+        ]
+    },
+    {
+        icon: ClipboardList,
+        name: 'Task-uri',
+        route: 'tasks.index',
+        subItems: [
+            { name: 'Toate Task-urile', route: 'tasks.index' },
+            { name: 'Task-urile Mele', route: 'tasks.my-tasks' },
+            { name: 'În Progres', route: 'tasks.in-progress' },
+            { name: 'În Review', route: 'tasks.review' },
+            { name: 'Finalizate', route: 'tasks.completed' }
+        ]
+    },
+    {
+        icon: Timer,
+        name: 'Sprint-uri',
+        route: 'sprints.index',
+        subItems: [
+            { name: 'Sprint Activ', route: 'sprints.active' },
+            { name: 'Planificare', route: 'sprints.planning' },
+            { name: 'Istoric', route: 'sprints.history' }
+        ]
+    },
+    {
+        icon: FileText,
+        name: 'Documentație',
+        route: 'documentation.index',
+        subItems: [
+            { name: 'Vizualizare', route: 'documentation.view' },
+            { name: 'Generare Automată', route: 'documentation.generate' },
+            { name: 'Istoric', route: 'documentation.history' }
+        ]
+    },
+    { icon: Users, name: 'Echipă', route: 'team.index' },
+    { icon: Calendar, name: 'Calendar', route: 'calendar' },
+    { icon: Settings, name: 'Setări', route: 'settings.index' }
+];
 </script>
 
 <template>
-    <div>
-        <div class="min-h-screen bg-gray-100">
-            <nav
-                class="border-b border-gray-100 bg-white"
-            >
-                <!-- Primary Navigation Menu -->
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="flex h-16 justify-between">
-                        <div class="flex">
-                            <!-- Logo -->
-                            <div class="flex shrink-0 items-center">
-                                <Link :href="route('dashboard')">
-                                    <Logo
-                                        class="block h-9 w-auto fill-current text-gray-800"
-                                    />
-                                </Link>
-                            </div>
-
-                            <!-- Navigation Links -->
-                            <div
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
-                            >
-                                <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
-
-                        <div class="hidden sm:ms-6 sm:flex sm:items-center">
-                            <!-- Settings Dropdown -->
-                            <div class="relative ms-3">
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <span class="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {{ $page.props.auth.user.name }}
-
-                                                <svg
-                                                    class="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clip-rule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </template>
-
-                                    <template #content>
-                                        <DropdownLink
-                                            :href="route('profile.edit')"
-                                        >
-                                            Profile
-                                        </DropdownLink>
-                                        <DropdownLink
-                                            :href="route('logout')"
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </DropdownLink>
-                                    </template>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <!-- Hamburger -->
-                        <div class="-me-2 flex items-center sm:hidden">
-                            <button
-                                @click="
-                                    showingNavigationDropdown =
-                                        !showingNavigationDropdown
-                                "
-                                class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                            >
-                                <svg
-                                    class="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        :class="{
-                                            hidden: showingNavigationDropdown,
-                                            'inline-flex':
-                                                !showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        :class="{
-                                            hidden: !showingNavigationDropdown,
-                                            'inline-flex':
-                                                showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+    <div class="min-h-screen bg-gray-50">
+        <!-- Sidebar -->
+        <div :class="[
+      'fixed top-0 left-0 h-full bg-white shadow-lg transition-all duration-300 z-20',
+      sidebarOpen ? 'w-64' : 'w-20'
+    ]">
+            <!-- Logo -->
+            <Logo class="w-20 h-auto mx-auto mt-6" />
+            <div class="flex items-center justify-between px-6 h-16 border-b border-gray-100">
+                <div class="flex items-center">
+                    <Link :href="route('dashboard')">
+                        <Logo class="h-8 w-auto" />
+                    </Link>
                 </div>
-
-                <!-- Responsive Navigation Menu -->
-                <div
-                    :class="{
-                        block: showingNavigationDropdown,
-                        hidden: !showingNavigationDropdown,
-                    }"
-                    class="sm:hidden"
+                <button
+                    @click="sidebarOpen = !sidebarOpen"
+                    class="p-2 rounded-lg hover:bg-gray-100 text-gray-500"
                 >
-                    <div class="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
+                    <X v-if="sidebarOpen" class="w-5 h-5" />
+                    <Menu v-else class="w-5 h-5" />
+                </button>
+            </div>
 
-                    <!-- Responsive Settings Options -->
-                    <div
-                        class="border-t border-gray-200 pb-1 pt-4"
+            <!-- Navigation -->
+            <nav class="p-4 space-y-1">
+                <div v-for="item in menuItems" :key="item.route" class="relative">
+                    <Link
+                        :href="route(item.route)"
+                        class="flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"
                     >
-                        <div class="px-4">
-                            <div
-                                class="text-base font-medium text-gray-800"
-                            >
-                                {{ $page.props.auth.user.name }}
-                            </div>
-                            <div class="text-sm font-medium text-gray-500">
-                                {{ $page.props.auth.user.email }}
-                            </div>
-                        </div>
+                        <component :is="item.icon" class="w-5 h-5" />
+                        <template v-if="sidebarOpen">
+                            <span class="ml-3 text-sm font-medium flex-1">{{ item.name }}</span>
+                            <ChevronDown v-if="item.subItems" class="w-4 h-4" />
+                        </template>
+                    </Link>
 
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')">
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                :href="route('logout')"
-                                method="post"
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
+                    <div v-if="sidebarOpen && item.subItems" class="ml-6 mt-1 space-y-1">
+                        <Link
+                            v-for="subItem in item.subItems"
+                            :key="subItem.route"
+                            :href="route(subItem.route)"
+                            class="flex items-center px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"
+                        >
+                            {{ subItem.name }}
+                        </Link>
                     </div>
                 </div>
             </nav>
+        </div>
 
-            <!-- Page Heading -->
-            <header
-                class="bg-white shadow"
-                v-if="$slots.header"
-            >
-                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                    <slot name="header" />
+        <!-- Main Content -->
+        <div :class="[
+      'transition-all duration-300',
+      sidebarOpen ? 'ml-64' : 'ml-20'
+    ]">
+            <!-- Header -->
+            <header class="h-16 bg-white shadow-sm fixed top-0 right-0 left-auto w-full z-10">
+                <div class="flex items-center justify-end h-full px-6 gap-4">
+                    <!-- Notifications -->
+                    <Dropdown align="right" width="48">
+                        <template #trigger>
+                            <button class="relative p-2 rounded-lg hover:bg-gray-100">
+                                <Bell class="w-5 h-5 text-gray-500" />
+                                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">
+                  3
+                </span>
+                            </button>
+                        </template>
+
+                        <template #content>
+                            <div class="p-4">
+                                <div class="text-sm font-medium text-gray-500">Notificări</div>
+                                <div class="mt-3 space-y-2">
+                                    <DropdownLink :href="route('notifications')">
+                                        Vezi toate notificările
+                                    </DropdownLink>
+                                </div>
+                            </div>
+                        </template>
+                    </Dropdown>
+
+                    <!-- User Menu -->
+                    <Dropdown align="right" width="48">
+                        <template #trigger>
+                            <button class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-medium">
+                                    {{ user.name.charAt(0) }}
+                                </div>
+                                <template v-if="sidebarOpen">
+                                    <span class="ml-3 text-sm font-medium text-gray-700">{{ user.name }}</span>
+                                    <ChevronDown class="w-4 h-4 ml-2 text-gray-500" />
+                                </template>
+                            </button>
+                        </template>
+
+                        <template #content>
+                            <DropdownLink :href="route('profile.edit')">
+                                Profil
+                            </DropdownLink>
+                            <DropdownLink :href="route('profile.settings')">
+                                Setări
+                            </DropdownLink>
+                            <DropdownLink :href="route('logout')" method="post" as="button">
+                                Deconectare
+                            </DropdownLink>
+                        </template>
+                    </Dropdown>
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main>
-                <slot />
+            <main class="pt-16 p-6">
+                <div class="max-w-7xl mx-auto">
+                    <template v-if="$slots.header">
+                        <header class="mb-6">
+                            <slot name="header" />
+                        </header>
+                    </template>
+
+                    <slot />
+                </div>
             </main>
         </div>
     </div>
