@@ -5,15 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Services\Project\CreateProjectService;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
+
+    public function __construct(private readonly CreateProjectService $createProjectService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $projects = Project::with(['owner', 'members'])
+            ->withCount('tasks')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('Projects/ProjectIndex', [
+            'projects' => $projects
+        ]);
     }
 
     /**
@@ -21,7 +36,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Projects/ProjectCreate');
     }
 
     /**
@@ -29,7 +44,17 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        $projectKey = $this->createProjectService->projectKeyGenerator($request->validated()['name']);
+
+        $project = Project::create(array_merge(
+            $request->validated(),
+            [
+                'key' => $projectKey,
+                'owner_id' => auth()->id()
+            ]
+        ));
+
+        return redirect()->route('projects.show', $project);
     }
 
     /**
@@ -37,7 +62,11 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        $project->load(['owner', 'members', 'tasks']);
+
+        return Inertia::render('Projects/Show', [
+            'project' => $project
+        ]);
     }
 
     /**
@@ -62,5 +91,15 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         //
+    }
+    public function generateProjectKey(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255'
+        ]);
+
+        $key = $this->createProjectService->projectKeyGenerator($request->name);
+
+        return response()->json(['key' => $key]);
     }
 }
