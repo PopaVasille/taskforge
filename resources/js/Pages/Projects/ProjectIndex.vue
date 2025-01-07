@@ -7,6 +7,11 @@ import { PlusCircle } from 'lucide-vue-next';
 defineProps({
     projects: Object
 });
+
+function created() {
+    console.log('Projects:', this.projects);
+}
+
 </script>
 
 <template>
@@ -31,11 +36,16 @@ defineProps({
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div v-if="projects.length > 0" v-for="project in projects.data" :key="project.id"
+                            <div v-if="projects.data.length > 0" v-for="project in projects.data" :key="project.id"
                                  class="bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                <Link :href="route('projects.show', project.id)">
+                                <Link :href="route('projects.show', { project: project.id })">
                                     <div class="p-4">
-                                        <h3 class="text-lg font-semibold">{{ project.name }}</h3>
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="text-lg font-semibold">{{ project.name }}</h3>
+                                            <span class="text-sm px-2 py-0.5 bg-gray-100 text-gray-600 rounded">
+                                            {{ project.key }}
+                                            </span>
+                                        </div>
                                         <p class="text-sm text-gray-600 mt-1">{{ project.description }}</p>
                                         <div class="mt-4 flex justify-between items-center">
                                             <span class="text-sm text-gray-500">

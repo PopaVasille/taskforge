@@ -31,7 +31,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('projects')->name('projects.')->group(function () {
         Route::get('/', [ProjectController::class, 'index'])->name('index');
         Route::get('/create', [ProjectController::class, 'create'])->name('create');
+        Route::get('/show/{project}', [ProjectController::class, 'show'])->name('show');
         Route::post('/store', [ProjectController::class, 'store'])->name('store');
+        Route::post('/settings', [ProjectController::class, 'settings'])->name('settings');
         Route::get('/active', [ProjectController::class, 'active'])->name('active');
         Route::get('/archived', [ProjectController::class, 'archived'])->name('archived');
         Route::post('/generate-key', [ProjectController::class, 'generateProjectKey'])->name('generate-key');

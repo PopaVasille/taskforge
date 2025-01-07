@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Models\User;
 use App\Services\Project\CreateProjectService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -62,9 +63,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $project->load(['owner', 'members', 'tasks']);
+        $project = Project::with(['owner', 'members', 'tasks'])
+            ->findOrFail($project->id);
 
-        return Inertia::render('Projects/Show', [
+        return Inertia::render('Projects/ProjectShow', [
             'project' => $project
         ]);
     }
