@@ -37,7 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/active', [ProjectController::class, 'active'])->name('active');
         Route::get('/archived', [ProjectController::class, 'archived'])->name('archived');
         Route::post('/generate-key', [ProjectController::class, 'generateProjectKey'])->name('generate-key');
-
+        Route::get('/edit/{project}', [ProjectController::class, 'edit'])->name('edit');
+        Route::put('/update/{project}', [ProjectController::class, 'update'])->name('update');
         // Sprinturi
         Route::get('/sprints', [SprintController::class, 'index'])->name('sprints');
         Route::get('/sprints/active', [SprintController::class, 'active'])->name('sprints.active');

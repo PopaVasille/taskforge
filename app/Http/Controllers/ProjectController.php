@@ -76,7 +76,14 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        if (auth()->id() !== $project->owner_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+
+        return Inertia::render('Projects/ProjectEdit', [
+            'project' => $project
+        ]);
     }
 
     /**
@@ -84,7 +91,15 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        if (auth()->id() !== $project->owner_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+
+        $project->update($request->validated());
+
+        return redirect()->route('projects.show', $project)
+            ->with('success', 'Project updated successfully.');
     }
 
     /**
