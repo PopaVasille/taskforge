@@ -119,4 +119,34 @@ class ProjectController extends Controller
 
         return response()->json(['key' => $key]);
     }
+    public function archive(Project $project)
+    {
+        if (auth()->id() !== $project->owner_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $project->update([
+            'status' => 'archived',
+            'archived_at' => now()
+        ]);
+
+        return redirect()->route('projects.index')
+            ->with('success', 'Project archived successfully.');
+    }
+
+    public function unarchive(Project $project)
+    {
+        if (auth()->id() !== $project->owner_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $project->update([
+            'status' => 'active',
+            'archived_at' => null
+        ]);
+
+        return redirect()->route('projects.show', $project)
+            ->with('success', 'Project restored successfully.');
+    }
+
 }

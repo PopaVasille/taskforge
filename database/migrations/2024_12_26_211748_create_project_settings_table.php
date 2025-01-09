@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('project_settings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
+            $table->json('billing_settings')->nullable();
             $table->json('workflow_settings')->nullable();
             $table->json('notification_settings')->nullable();
             $table->json('permission_settings')->nullable();

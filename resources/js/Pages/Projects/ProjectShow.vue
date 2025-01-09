@@ -2,18 +2,11 @@
 <script setup>
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import {
-    Clock,
-    PencilIcon,
-    Users,
-    Calendar,
-    AlertTriangle,
-    CheckCircle2,
-    Timer,
-    Plus,
-    Settings
+import {Head, Link, router} from '@inertiajs/vue3';
+import {Clock, PencilIcon, Users, Calendar, AlertTriangle, CheckCircle2, Timer, Plus, Settings, RefreshCw, ArchiveIcon
 } from 'lucide-vue-next';
+import { useToast } from '@/Composables/useToast';
+const { showToast } = useToast();
 
 const props = defineProps({
     project: {
@@ -42,6 +35,31 @@ const getPriorityColor = (priority) => {
         'urgent': 'bg-red-100 text-red-800'
     };
     return colors[priority] || 'bg-gray-100 text-gray-800';
+};
+const archiveProject = () => {
+    if (confirm('Are you sure you want to archive this project?')) {
+        router.post(route('projects.archive', props.project.id), {}, {
+            preserveScroll: true,
+            onSuccess: () => {
+                showToast('Project archived successfully');
+            },
+            onError: () => {
+                showToast('Failed to archive project', 'error');
+            }
+        });
+    }
+};
+
+const unarchiveProject = () => {
+    router.post(route('projects.unarchive', props.project.id), {}, {
+        preserveScroll: true,
+        onSuccess: () => {
+            showToast('Project unarchived successfully');
+        },
+        onError: () => {
+            showToast('Failed to unarchive project', 'error');
+        }
+    });
 };
 </script>
 
@@ -90,6 +108,24 @@ const getPriorityColor = (priority) => {
                         <Settings class="w-5 h-5 mr-2" />
                         Project Settings
                     </Link>
+                    <button
+                        v-if="project.status !== 'archived'"
+                        @click="archiveProject"
+                        class="inline-flex items-center px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50"
+                    >
+                        <ArchiveIcon class="w-5 h-5 mr-2" />
+                        Archive Project
+                    </button>
+
+                    <button
+                        v-else
+                        @click="unarchiveProject"
+                        class="inline-flex items-center px-4 py-2 border border-green-300 text-green-700 rounded-md hover:bg-green-50"
+                    >
+                        <RefreshCw class="w-5 h-5 mr-2" />
+                        Restore Project
+                    </button>
+                </div>
                 </div>
             </div>
 
@@ -189,6 +225,6 @@ const getPriorityColor = (priority) => {
                 </div>
                 <!-- Add other tab contents -->
             </div>
-        </div>
+
     </AuthenticatedLayout>
 </template>

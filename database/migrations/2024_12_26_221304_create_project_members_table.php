@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('role', ['owner', 'admin', 'member', 'viewer']);
             $table->json('permissions')->nullable();
+            $table->decimal('hourly_rate', 10, 2)->nullable();
             $table->datetime('access_start')->nullable();
             $table->datetime('access_end')->nullable();
             $table->timestamps();

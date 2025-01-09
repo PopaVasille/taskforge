@@ -40,6 +40,8 @@ return new class extends Migration
             $table->integer('story_points')->nullable();
             $table->foreignId('parent_task_id')->nullable()->constrained('tasks')->nullOnDelete();
             $table->enum('type', ['epic', 'story', 'task', 'bug']);
+            $table->decimal('estimated_cost', 10, 2)->nullable();
+            $table->decimal('actual_cost', 10, 2)->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
             $table->softDeletes();

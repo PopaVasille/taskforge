@@ -20,7 +20,8 @@ import {
     StopCircle,
     History
 } from 'lucide-vue-next';
-
+import Toast from '@/Components/Common/Toast.vue';
+import { useToast } from '@/Composables/useToast';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import Logo from '@/Components/Common/Logo.vue';
@@ -36,6 +37,7 @@ const currentTaskId = ref(null);
 const timerStartTime = ref(null);
 const elapsedTime = ref(0);
 
+const { toast } = useToast();
 const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -341,4 +343,10 @@ const toggleSubMenu = (route) => {
             </main>
         </div>
     </div>
+    <Toast
+        v-if="toast"
+        :message="toast.message"
+        :type="toast.type"
+        :duration="toast.duration"
+    />
 </template>

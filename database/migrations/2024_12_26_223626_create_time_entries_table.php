@@ -21,6 +21,8 @@ return new class extends Migration
             $table->boolean('billable')->default(false);
             $table->string('category')->nullable();
             $table->decimal('rate', 10, 2)->nullable();
+            $table->decimal('total_amount', 10, 2)->nullable();
+            $table->string('currency', 3)->default('EUR');
             $table->json('metadata')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -16,14 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('key')->unique(); // Unique project identifier
             $table->text('description')->nullable();
-            $table->enum('status', ['active', 'on_hold', 'completed', 'cancelled']);
+            $table->enum('status', ['active', 'on_hold', 'completed', 'cancelled','archived'])->default('active');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent']);
             $table->datetime('start_date')->nullable();
             $table->datetime('end_date')->nullable();
             $table->decimal('budget', 10, 2)->nullable();
-            $table->string('currency', 3)->default('USD');
+            $table->string('currency', 3)->default('EUR');
             $table->foreignId('owner_id')->constrained('users');
             $table->json('metadata')->nullable();
+            $table->timestamp('archived_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
