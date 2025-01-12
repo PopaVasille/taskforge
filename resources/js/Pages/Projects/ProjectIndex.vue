@@ -1,8 +1,10 @@
 <!-- resources/js/Pages/Projects/ProjectIndex.vue -->
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import { PlusCircle } from 'lucide-vue-next';
+import {Head, Link, router} from '@inertiajs/vue3';
+import { PlusCircle,Trash2 } from 'lucide-vue-next';
+import {useToast} from "@/Composables/useToast.js";
+
 
 defineProps({
     projects: Object
@@ -11,6 +13,19 @@ defineProps({
 function created() {
     console.log('Projects:', this.projects);
 }
+const { showToast } = useToast();
+const deleteProject = (project) => {
+    if (confirm('Are you sure you want to delete this project?')) {
+        router.delete(route('projects.destroy', project.id), {
+            onSuccess: () => {
+                showToast('Project deleted successfully');
+            },
+            onError: () => {
+                showToast('Failed to delete project', 'error');
+            }
+        });
+    }
+};
 
 </script>
 
@@ -59,6 +74,13 @@ function created() {
                                             }">
                                                 {{ project.status }}
                                             </span>
+                                            <button
+                                                v-if="project.owner_id === $page.props.auth.user.id"
+                                                @click.prevent="deleteProject(project)"
+                                                class="text-red-600 hover:text-red-800"
+                                            >
+                                                <Trash2 class="w-5 h-5" />
+                                            </button>
                                         </div>
                                     </div>
                                 </Link>

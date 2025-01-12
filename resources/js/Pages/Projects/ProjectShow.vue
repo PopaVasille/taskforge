@@ -3,7 +3,7 @@
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head, Link, router} from '@inertiajs/vue3';
-import {Clock, PencilIcon, Users, Calendar, AlertTriangle, CheckCircle2, Timer, Plus, Settings, RefreshCw, ArchiveIcon
+import {Clock, PencilIcon, Users, Calendar, AlertTriangle, CheckCircle2, Timer, Plus, Settings, RefreshCw, ArchiveIcon,Trash2
 } from 'lucide-vue-next';
 import { useToast } from '@/Composables/useToast';
 const { showToast } = useToast();
@@ -60,6 +60,18 @@ const unarchiveProject = () => {
             showToast('Failed to unarchive project', 'error');
         }
     });
+};
+const deleteProject = () => {
+    if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+        router.delete(route('projects.destroy', props.project.id), {
+            onSuccess: () => {
+                showToast('Project deleted successfully');
+            },
+            onError: () => {
+                showToast('Failed to delete project', 'error');
+            }
+        });
+    }
 };
 </script>
 
@@ -124,6 +136,13 @@ const unarchiveProject = () => {
                     >
                         <RefreshCw class="w-5 h-5 mr-2" />
                         Restore Project
+                    </button>
+                    <button
+                        @click="deleteProject"
+                        class="inline-flex items-center px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50"
+                    >
+                        <Trash2 class="w-5 h-5 mr-2" />
+                        Delete Project
                     </button>
                 </div>
                 </div>

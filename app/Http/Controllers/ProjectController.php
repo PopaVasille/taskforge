@@ -107,7 +107,26 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        if (auth()->id() !== $project->owner_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $project->delete();
+
+        return redirect()->route('projects.index')
+            ->with('success', 'Project deleted successfully.');
+    }
+
+    public function forceDelete(Project $project)
+    {
+        if (auth()->id() !== $project->owner_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $project->forceDelete(); // Permanent delete
+
+        return redirect()->route('projects.index')
+            ->with('success', 'Project permanently deleted.');
     }
     public function generateProjectKey(Request $request)
     {

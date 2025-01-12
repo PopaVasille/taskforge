@@ -39,8 +39,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/generate-key', [ProjectController::class, 'generateProjectKey'])->name('generate-key');
         Route::get('/edit/{project}', [ProjectController::class, 'edit'])->name('edit');
         Route::put('/update/{project}', [ProjectController::class, 'update'])->name('update');
-        Route::post('archive/{project}', [ProjectController::class, 'archive'])->name('archive');
-        Route::post('unarchive/{project}', [ProjectController::class, 'unarchive'])->name('unarchive');
+        Route::post('/archive/{project}', [ProjectController::class, 'archive'])->name('archive');
+        Route::post('/unarchive/{project}', [ProjectController::class, 'unarchive'])->name('unarchive');
+        Route::delete('/destroy/{project}', [ProjectController::class, 'destroy'])->name('destroy');
+        Route::delete('/forceDelete/{project}', [ProjectController::class, 'forceDelete'])->name('projects.force-delete');
         // Sprinturi
         Route::get('/sprints', [SprintController::class, 'index'])->name('sprints');
         Route::get('/sprints/active', [SprintController::class, 'active'])->name('sprints.active');
